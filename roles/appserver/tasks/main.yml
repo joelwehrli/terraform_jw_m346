@@ -32,8 +32,23 @@
   args:
     chdir: /srv
 
-- name: run java application
-  ansible.builtin.command: java -DDB_USERNAME="{{ dbuser }}" -DDB_PASSWORD="{{ dbpassword }}" -jar target/architecture-refcard-03-0.0.1-SNAPSHOT.jar &
-  args:
-    chdir: /srv
+- name: systemdfile templating
+  ansible.builtin.template:
+    src: jokesdb.service.j2
+    dest: /usr/lib/systemd/system/jokesdb.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: reload and enable jokesdb systemd
+  ansible.builtin.systemd_service:
+    name: jokesdb
+    daemon_reload: true
+    enabled: true
+    state: started
+
+#- name: run java application
+#  ansible.builtin.command: java -DDB_USERNAME="{{ dbuser }}" -DDB_PASSWORD="{{ dbpassword }}" -jar target/architecture-refcard-03-0.0.1-SNAPSHOT.jar &
+#  args:
+#    chdir: /srv
 
