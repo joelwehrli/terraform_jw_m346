@@ -13,6 +13,7 @@ Dort habe ich einfach noch die Zeile update_cache erstellt.
 
 Anschliessend gab es nur noch kleine Fehler und Flüchtigkeitsfehler. (vergessen die richtige Public IP einzutragen usw.) Hier war der grosse Zeitfresser einfach herauszufinden wie ich das nun Umsetze.
 Der Gedanke, dass ich eigentlich nur die Public IP beim Ansible Auftrag am richtigen Ort eintragen muss, um alles im AWS heraufzufahren, kam mir übrigens mitten in der Woche um Mitternacht als ich schon längst hätte schlafen sollen. :^)
+Nachdem die ganze Klasse nochmals eine Woche länger Zeit bekommen hat, habe ich noch ein System Daemon File erstellt für die Jokesdb. Somit läuft die JokesDB auch ohne dass die ganze Zeit im Terminal das CLI offen sein muss. Zudem habe ich noch ein Skript hinzugefügt. Nun muss nur noch dieses Skript ausgeführt werden und sowohl die AWS-Umgebung, als auch die Konfigurationen mit Ansible werden alle ausgeführt.
 
 
 # Reflexion
