@@ -1,0 +1,39 @@
+---
+# tasks file for appserver
+
+- name: Clone Jokesapp
+  ansible.builtin.git:
+    repo: https://gitlab.com/bbwrl/m346-ref-card-03.git
+    dest: /srv
+    single_branch: yes
+    version: main
+    force: true
+
+- name: Copy application.properties
+  ansible.builtin.template:
+    src: application.properties.j2
+    dest: /srv/src/main/resources/application.properties
+    owner: root
+    group: root
+    mode: '0775'
+
+- name: Install a list of packages
+  ansible.builtin.apt:
+    pkg:
+    - openjdk-18-jdk
+    - openjdk-18-demo
+    - openjdk-18-doc
+    - openjdk-18-jre-headless
+    - openjdk-18-source
+    - maven
+
+- name: compile java code
+  ansible.builtin.command: mvn package
+  args:
+    chdir: /srv
+
+- name: run java application
+  ansible.builtin.command: java -DDB_USERNAME="{{ dbuser }}" -DDB_PASSWORD="{{ dbpassword }}" -jar target/architecture-refcard-03-0.0.1-SNAPSHOT.jar &
+  args:
+    chdir: /srv
+

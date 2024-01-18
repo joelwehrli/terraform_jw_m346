@@ -1,0 +1,16 @@
+---
+- name: Install jokeapp
+  hosts: all
+  remote_user: ansible
+  become: yes
+
+  tasks:
+  - name: dbserver role
+    ansible.builtin.include_role:
+      name: dbserver
+    when: "'db' in group_names"
+
+  - name: applicationserver role
+    ansible.builtin.include_role:
+      name: appserver
+    when: "'app' in group_names"

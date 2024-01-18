@@ -1,0 +1,87 @@
+---
+# tasks file for dbserver
+
+#- name: install mariadb repo
+#  ansible.builtin.command: curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo  bash
+
+- name: Install mariadb and pip
+  ansible.builtin.apt:
+    pkg:
+    - mariadb-server
+    - python3-pip
+    update_cache: yes
+
+- name: copy mariadb config for remote connections
+  ansible.builtin.copy:
+    src: 50-server.cnf
+    dest: /etc/mysql/mariadb.conf.d/50-server.cnf
+    mode: '0644'
+
+- name: Make sure mariadb daemon is restarted
+  ansible.builtin.systemd_service:
+    state: restarted
+    name: mariadb
+
+- name: Install PyMySQL 
+  ansible.builtin.pip:
+    name: PyMySQL
+
+- name: Create database jokedb
+  mysql_db:
+    name: jokedb
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Create database user
+  community.mysql.mysql_user:
+    host: "{{ datasource }}"
+    name: "{{ dbuser }}"
+    password: "{{ dbpassword }}"
+    priv: '*.*:ALL'
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: copy data.sql
+  ansible.builtin.copy:
+    src: data.sql
+    dest: /tmp/data.sql
+    mode: '0644'
+
+- name: copy schema.sql
+  ansible.builtin.copy:
+    src: schema.sql
+    dest: /tmp/schema.sql
+    mode: '0644'
+
+- name: create schema
+  community.mysql.mysql_db:
+    state: import
+    name: jokedb
+    login_user: root
+#    login_user: "{{ dbuser }}"
+    login_password: "{{ dbpassword }}"
+    encoding: latin1
+    target: /tmp/schema.sql
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+
+- name: create data
+  community.mysql.mysql_db:
+    state: import
+    name: jokedb
+    login_user: root
+#    login_user: "{{ dbuser }}"
+    login_password: "{{ dbpassword }}"
+    encoding: latin1
+    target: /tmp/data.sql
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+#- name: install db schema
+#  ansible.builtin.command: mysql -u jokedbuser -p jokedb < /tmp/schema.sql
+#  args:
+#    chdir: /tmp
+
+#- name: install db data
+#  ansible.builtin.command: mysql -u jokedbuser -p jokedb < /tmp/data.sql
+#  args:
+#    chdir: /tmp
