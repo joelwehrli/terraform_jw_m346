@@ -7,8 +7,8 @@ sleep 20
 terraform apply job2do
 sleep 60
 
-paste inventory/group_vars/all/name.txt inventory/group_vars/all/ip.txt > inventory/group_vars/all/ds_ip.txt
-sleep 10
-cat inventory/group_vars/all/ds_ip.txt >> inventory/group_vars/all/vars.yml
+
+ipaddress=$(cat inventory/group_vars/all/ip.txt)
+sed -i 's/datasource\:/datasource: '"$ipaddress"'/' inventory/group_vars/all/vars.yml
 sleep 15
 ansible-playbook -i inventory/hosts site.yml --ask-vault-pass
