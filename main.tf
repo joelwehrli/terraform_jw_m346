@@ -175,5 +175,5 @@ output "database_port" {
 
 resource "local_file" "ip" {
   content  = aws_instance.ec2_instance.public_ip
-  filename = "/home/joel/terraform_jw/inventory/group_vars/all/ip.txt"
+  filename = "/home/joel/terraform_jw_m346/inventory/group_vars/all/ip.txt"
 }

@@ -17,6 +17,22 @@
     group: root
     mode: '0775'
 
+- name: Copy meme
+  ansible.builtin.copy:
+    src: /home/joel/terraform_jw_m346/meme.png
+    dest: /srv/src/main/resources/static/meme.png
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy index.html
+  ansible.builtin.template:
+    src: index.html
+    dest: /srv/src/main/resources/templates/index.html
+    owner: root
+    group: root
+    mode: '0775'
+
 - name: Install a list of packages
   ansible.builtin.apt:
     pkg:
